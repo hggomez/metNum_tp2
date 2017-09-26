@@ -41,4 +41,8 @@ void KNN(Dato& A, const vector<Dato>& training, uint k) {
     auto max = max_element(etiquetas.begin(), etiquetas.end());
 
     A.etiqueta = (Etiqueta) (max - etiquetas.begin());
+
+    if (A.etiqueta == 10) {
+        cout << "MAL" << endl;
+    }
 }
