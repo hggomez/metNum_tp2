@@ -43,11 +43,14 @@ vector<Dato> datos(){
                 //como no se cuantos digitos tengo y estoy iterando
                 //sobre caracter creo un string donde almacenar el numero
                 string numero;
+                
                 //si no es ',' entonces es un numero y es el que quiero concatenar
-                while(*it != ','){
+                while(*it != ',' && *it != '\n'){
                     //sin esto, tendria que funcionar, pero si se lo sacas me pasaba que le pasaba
                     //a stoi un argumento invalido (creo que habia tabs o espacios o algo que no le gusto
-                    if('0' <= *it && *it <= '9') numero += *it;
+                   char digito = *it;
+                    if('0' <= *it && *it <= '9') numero += digito;
+
                     ++it;
                 }
                 //despues de debuggear un rato entiendo cada vez menos, a veces numero es un string MUY largo
