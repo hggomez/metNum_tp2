@@ -227,6 +227,19 @@ public:
     */
     static bool esNulo(Mat<T> &A);
 
+
+    /**
+    * Construye la matriz X y la centra calculando mu y multiplicando por el escalar 1/sqrt(n-1)
+    * @param S conjunto de datos representado como vector de matrices
+    */
+    static Mat<T> construiryCentrarX(vector< Mat<T> > &S);
+
+    /**
+    * Toma el conjunto de datos y obtiene la matriz de covarianza
+    * @param S conjunto de datos
+    */
+    static void obtenerMcov(vector< Mat<T> > &S, int alpha);
+
     /**
      * Operador de acceso para clase Mat. Equivalente a Mat[fila][columna]
      * Permite modificar la estructura
@@ -893,6 +906,78 @@ vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalore
     return base;
 
 }
+
+
+template <typename T>
+Mat<T> Mat<T>::construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(1) ,x(2), ... en T
+
+    int dimdelDato = S[0].filas(); // T[0] obtenemos un autovector que se representa con Mat. Este autovector es una columna y la dimension
+    // del dato esta en la cant de filas de esa Matriz. Como son autovectores tienen la misma dimension
+    // asique es lo mismo tomar cualquiera. Notar que T[i].columnas = 1.
+
+    Mat<T> X = Mat<T>( S.size(), dimdelDato);
+
+
+    int contador = 0;    //podria tener un iterador del vector pero paja, dsps viene Nico el limpiador de codigo
+    for (int fila = 0; fila < X.filas(); fila++) { // Recordar que X( Tam de T , Dimension del dato T[i] = filas T[i]
+        Mat<T> vect = S[contador]; // Obtengo el primer autovector
+        for (int columna = 0; columna < X.columnas(); columna++) {
+            X(fila, columna) = vect(columna, 0); // Invertimos el orden para que X almacene por FILAS cada autovector(que es una columna)
+        }
+        contador++; // Incremento el contador para tomar el proximo autovector , notar que  0 <= contador <= X.filas = T.size()
+    }
+
+    cout << " X al principio es : " << endl;
+    cout << X;
+    //Hasta aca tengo la X , ahora hay que centrarla
+
+
+    double raiz = sqrt(X.filas() - 1 ); // Obtenemos sqrt(n-1) , n es la dimension de la base original S.size = X.filas
+    raiz = pow(raiz,-1); // Queremos multiplicar por 1/raiz
+    cout << "1/sqrt(X.filas() -1) = " << raiz << endl;
+    vector<double> medias; // Vamos a crear un vector de medias, media[i] corresponde a la media de la columna i de X.
+    // notar que 0 <= medias.size() <= X.columnas()
+
+
+
+    for(int columna = 0; columna < X.columnas(); columna++ ){ //Calculo cada media por columna
+        double acum = 0;
+        for(int i = 0 ; i < X.filas(); i++){
+            acum = acum + X(i,columna);
+        }
+        double media = acum/X.filas();
+        medias.push_back(media);
+    }
+    cout << "Calcule las medias y son :" << medias[0] << " , " << medias[1] << endl;
+    // Una vez que tengo las medias calculadas pasamos a restarselas en cada columna
+    cout << "X.filas() = " << X.filas() << "X.cols() = " << X.columnas() << endl;
+    for(int columna = 0; columna < X.columnas(); columna++){
+        for(int fila = 0; fila < X.filas();fila++){
+            X(fila,columna) = X(fila,columna) - medias[columna];
+        }
+    }
+
+    // Ahora la matriz se multiplica por el escalar 1/sqrt(n-1)
+
+    X = X*(raiz);
+
+    return X;
+
+}
+
+template <typename T>
+void Mat<T>::obtenerMcov(vector< Mat<T> > &S, int alpha){ //Tengo la secuencia de datos x(1) ,x(2), ...
+
+    Mat<T> X = construiryCentrarX(S);
+
+    Mat<T> Xt = X;
+    Mat<T>::transpuesta(Xt); // Tomamos la transpuesta de X
+
+    Mat<T> Mcov = (X*Xt);
+
+    // Ahora tengo que crear una base de autovectores con el parametro alpha de la matriz de covarianza??
+}
+
 
 
 #endif //METODOS_TP1_MAT_H
