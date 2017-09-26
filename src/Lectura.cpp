@@ -10,12 +10,12 @@
 
 using namespace std;
 
-void generar_training(vector<Dato>& resultado) {
+void generar_training(vector<Dato>& resultado, const string& training_set_filePath) {
 
     cerr << "Generando training..." << endl;
 
     ifstream data;
-    data.open("../data/train.csv");
+    data.open(training_set_filePath);
 
     string header;
     getline(data, header);
@@ -40,11 +40,11 @@ void generar_training(vector<Dato>& resultado) {
     data.close();
 }
 
-void generar_test(vector<Dato>& resultado) {
+void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
     cerr << "Generando casos de test..." << endl;
 
     ifstream data;
-    data.open("../data/test.csv");
+    data.open(test_set_filePath);
 
     string header;
     getline(data, header);

@@ -10,10 +10,11 @@ double distancia(const Mat<uint>& A, const Mat<uint>& B) {
     double res = 0.0;
     for (int i = 0; i < A.filas(); ++i) {
         for (int j = 0; j < A.columnas(); ++j) {
-            res += abs(A(i,j) - B(i,j));
+            auto dif = abs(A(i,j) - B(i,j));
+            res += dif*dif;
         }
     }
-    return res;
+    return sqrt(res);
 }
 
 struct menor {
@@ -41,8 +42,4 @@ void KNN(Dato& A, const vector<Dato>& training, uint k) {
     auto max = max_element(etiquetas.begin(), etiquetas.end());
 
     A.etiqueta = (Etiqueta) (max - etiquetas.begin());
-
-    if (A.etiqueta == 10) {
-        cout << "MAL" << endl;
-    }
 }
