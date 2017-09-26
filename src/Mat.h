@@ -6,6 +6,8 @@
 #include <cmath>
 #include <cmath>
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 
 #define EPS 0//1e-10 //Epsilon para la eliminacion gaussiana
 
@@ -204,6 +206,26 @@ public:
      * @param a1 autovalor.
      */
     static void deflacion(Mat<T> &A , Mat<T> &v1, double a1);
+
+    /**
+     * Crea una base de autovectores asociados a los autovalores de la matriz
+    * @param A matriz
+    * @param autovalores
+    * @param iteraciones para calcular autovalor.
+    */
+    static vector< Mat<T> > baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter);
+
+    /**
+    * Crea una matriz con numeros al azar
+    * @param A matriz
+    */
+    static void randomizar(Mat<T> &A);
+
+    /**
+    * Chequea que la matriz no sea nula
+    * @param A matriz
+    */
+    static bool esNulo(Mat<T> &A);
 
     /**
      * Operador de acceso para clase Mat. Equivalente a Mat[fila][columna]
@@ -824,6 +846,52 @@ void Mat<T>::deflacion(Mat<T> &A , Mat<T> &v1, double a1){
     Mat<T> v1t = v1;
     v1t.transpuesta(v1t);
     A = A - (a1* (v1*v1t));
+}
+
+template <typename T>
+void Mat<T>::randomizar(Mat<T> &A){
+    srand(time(NULL));
+    for(int i = 0; i < A.filas() ; i++){
+        for(int j = 0; j < A.columnas() ; j++){
+            double azar = rand();
+            A(i,j) = azar;
+        }
+    }
+}
+
+template <typename T>
+bool Mat<T>::esNulo(Mat<T> &A){
+    bool res = true;
+    for(int i = 0; i < A.filas() ; i++){
+        for(int j = 0; j < A.columnas() ; j++){
+            double azar = rand();
+            res = res && (A(i,j) == 0.00);
+        }
+    }
+}
+
+template <typename T>
+vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter){
+    vector< Mat<T> > base; // Guardamos la base como un Conjunto de vectores que se representa con vector de Mat
+    Mat<T> v = Mat(A.filas(),1); // Inicializamos el vector x0 que va a ser random
+    for(int i = 0 ; i < A.filas() ; i ++){
+
+        Mat<T>::randomizar(v); // Tomamos un vector random
+        Mat<T> r = A*v; // Precalculamos A*v para asegurarnos que no de 0
+        while( Mat<T>::esNulo(v) && Mat<T>::esNulo(r)) { // Hay que chequear que el vector x0 no sea 0 y que A*x0 no sea 0
+            Mat<T>::randomizar(v);
+            r = A*v;
+        } // Si v no es nulo y A*v tampoco podemos calcular el autovalor
+
+        double a = calcularAutovalor(A,v,iter);
+
+        autovalores.push_back(a);
+        base.push_back(v);
+        deflacion(A,v,a); //Una vez que tenemos el autovalor
+    }
+
+    return base;
+
 }
 
 
