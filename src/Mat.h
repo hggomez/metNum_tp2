@@ -142,12 +142,6 @@ public:
      */
     static Mat<T> sustitucionHaciaAtras(const Mat<T> &A,const Mat<T> &b);
 
-    /**
-*
-* @param L Matriz (triangular inferior)
-* @param b Matriz columna respuesta
-* @return x Matriz de incognitas
-*/
     /***
      * Resuelve un sistema Ax=b donde A es una matriz triangular inferior (sustitucion hacia adelante)
      * El tercer parametro se agrega para no tener que almacenar L y U en matrices diferentes y poder hacer factorización
@@ -209,8 +203,7 @@ public:
      * @param v1 autovector asociado al autovalor a1
      * @param a1 autovalor.
      */
-
-    static void Mat<T>::deflacion(Mat<T> &A , Mat<T> &v1, double a1)
+    static void deflacion(Mat<T> &A , Mat<T> &v1, double a1);
 
     /**
      * Operador de acceso para clase Mat. Equivalente a Mat[fila][columna]
