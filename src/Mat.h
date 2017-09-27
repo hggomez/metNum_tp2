@@ -911,30 +911,27 @@ vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalore
 template <typename T>
 Mat<T> Mat<T>::construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(1) ,x(2), ... en T
 
-    int dimdelDato = S[0].filas(); // T[0] obtenemos un autovector que se representa con Mat. Este autovector es una columna y la dimension
-    // del dato esta en la cant de filas de esa Matriz. Como son autovectores tienen la misma dimension
-    // asique es lo mismo tomar cualquiera. Notar que T[i].columnas = 1.
+    int dimdelDato = S[0].columnas(); // S[0] obtenemos una fila que representa una imagen con Mat. Como todas las imagenes
+    // tienen el mismo tamanio le pido a una.
 
     Mat<T> X = Mat<T>( S.size(), dimdelDato);
 
 
     int contador = 0;    //podria tener un iterador del vector pero paja, dsps viene Nico el limpiador de codigo
-    for (int fila = 0; fila < X.filas(); fila++) { // Recordar que X( Tam de T , Dimension del dato T[i] = filas T[i]
-        Mat<T> vect = S[contador]; // Obtengo el primer autovector
+    for (int fila = 0; fila < X.filas(); fila++) { // Recordar que X( Tam de T , Dimension del dato S[i] = columnas S[i]
+        Mat<T> vect = S[contador]; // Obtengo la primer imagen
         for (int columna = 0; columna < X.columnas(); columna++) {
-            X(fila, columna) = vect(columna, 0); // Invertimos el orden para que X almacene por FILAS cada autovector(que es una columna)
+            X(fila, columna) = vect(0, columna); // Cada fila de X tendra almacenada una imagen
         }
-        contador++; // Incremento el contador para tomar el proximo autovector , notar que  0 <= contador <= X.filas = T.size()
+        contador++; // Incremento el contador para tomar la proxima imagen , notar que  0 <= contador <= X.filas = S.size()
     }
 
-    cout << " X al principio es : " << endl;
-    cout << X;
     //Hasta aca tengo la X , ahora hay que centrarla
 
 
     double raiz = sqrt(X.filas() - 1 ); // Obtenemos sqrt(n-1) , n es la dimension de la base original S.size = X.filas
     raiz = pow(raiz,-1); // Queremos multiplicar por 1/raiz
-    cout << "1/sqrt(X.filas() -1) = " << raiz << endl;
+
     vector<double> medias; // Vamos a crear un vector de medias, media[i] corresponde a la media de la columna i de X.
     // notar que 0 <= medias.size() <= X.columnas()
 
@@ -948,9 +945,7 @@ Mat<T> Mat<T>::construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de 
         double media = acum/X.filas();
         medias.push_back(media);
     }
-    cout << "Calcule las medias y son :" << medias[0] << " , " << medias[1] << endl;
-    // Una vez que tengo las medias calculadas pasamos a restarselas en cada columna
-    cout << "X.filas() = " << X.filas() << "X.cols() = " << X.columnas() << endl;
+
     for(int columna = 0; columna < X.columnas(); columna++){
         for(int fila = 0; fila < X.filas();fila++){
             X(fila,columna) = X(fila,columna) - medias[columna];
@@ -962,7 +957,6 @@ Mat<T> Mat<T>::construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de 
     X = X*(raiz);
 
     return X;
-
 }
 
 template <typename T>
