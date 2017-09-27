@@ -973,7 +973,7 @@ void Mat<T>::obtenerMcov(vector< Mat<T> > &S, int alpha){ //Tengo la secuencia d
     Mat<T> Xt = X;
     Mat<T>::transpuesta(Xt); // Tomamos la transpuesta de X
 
-    Mat<T> Mcov = (X*Xt);
+    Mat<T> Mcov = (Xt*X);
 
     // Ahora tengo que crear una base de autovectores con el parametro alpha de la matriz de covarianza??
 }
