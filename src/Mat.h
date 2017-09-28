@@ -213,7 +213,7 @@ public:
     * @param autovalores
     * @param iteraciones para calcular autovalor.
     */
-    static vector< Mat<T> > baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter);
+    static vector< Mat<T> > baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter, int alpha);
 
     /**
     * Crea una matriz con numeros al azar
@@ -238,7 +238,7 @@ public:
     * Toma el conjunto de datos y obtiene la matriz de covarianza
     * @param S conjunto de datos
     */
-    static void obtenerMcov(vector< Mat<T> > &S, int alpha);
+    static Mat<T> obtenerMcov(vector< Mat<T> > &S);
 
     /**
      * Operador de acceso para clase Mat. Equivalente a Mat[fila][columna]
@@ -884,10 +884,10 @@ bool Mat<T>::esNulo(Mat<T> &A){
 }
 
 template <typename T>
-vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter){
+vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter,int alpha){
     vector< Mat<T> > base; // Guardamos la base como un Conjunto de vectores que se representa con vector de Mat
     Mat<T> v = Mat(A.filas(),1); // Inicializamos el vector x0 que va a ser random
-    for(int i = 0 ; i < A.filas() ; i ++){
+    for(int i = 0 ; i < alpha ; i ++){
 
         Mat<T>::randomizar(v); // Tomamos un vector random
         Mat<T> r = A*v; // Precalculamos A*v para asegurarnos que no de 0
@@ -960,7 +960,7 @@ Mat<T> Mat<T>::construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de 
 }
 
 template <typename T>
-void Mat<T>::obtenerMcov(vector< Mat<T> > &S, int alpha){ //Tengo la secuencia de datos x(1) ,x(2), ...
+Mat<T> Mat<T>::obtenerMcov(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(1) ,x(2), ...
 
     Mat<T> X = construiryCentrarX(S);
 
@@ -969,7 +969,6 @@ void Mat<T>::obtenerMcov(vector< Mat<T> > &S, int alpha){ //Tengo la secuencia d
 
     Mat<T> Mcov = (Xt*X);
 
-    // Ahora tengo que crear una base de autovectores con el parametro alpha de la matriz de covarianza??
 }
 
 

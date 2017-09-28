@@ -12,10 +12,10 @@ typedef unsigned int Etiqueta;
 //estructura para juntar imagen con su etiqueta
 struct Dato {
 
-    Mat<uint> imagen;
+    Mat<double> imagen;
     Etiqueta etiqueta;
 
-    Dato(Mat<uint> foto, Etiqueta valor): imagen(foto), etiqueta(valor){}
+    Dato(Mat<double> foto, Etiqueta valor): imagen(foto), etiqueta(valor){}
 
 };
 
