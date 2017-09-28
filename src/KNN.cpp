@@ -10,10 +10,11 @@ double distancia(const Mat<uint>& A, const Mat<uint>& B) {
     double res = 0.0;
     for (int i = 0; i < A.filas(); ++i) {
         for (int j = 0; j < A.columnas(); ++j) {
-            res += abs(A(i,j) - B(i,j));
+            auto dif = abs(A(i,j) - B(i,j));
+            res += dif*dif;
         }
     }
-    return res;
+    return sqrt(res);
 }
 
 struct menor {

@@ -4,11 +4,11 @@
 #include <chrono>
 #include <iostream>
 
-template<typename TimeT = std::chrono::milliseconds, int repeticiones = 1>
+template<typename TimeT = std::chrono::milliseconds>
 struct measure
 {
     template<typename F, typename ...Args>
-    static typename TimeT::rep execution(F func, Args&&... args)
+    static typename TimeT::rep execution(const int repeticiones, F func, Args&&... args)
     {
         auto start = std::chrono::system_clock::now();
 
