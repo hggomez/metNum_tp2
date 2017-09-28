@@ -142,12 +142,6 @@ public:
      */
     static Mat<T> sustitucionHaciaAtras(const Mat<T> &A,const Mat<T> &b);
 
-    /**
-*
-* @param L Matriz (triangular inferior)
-* @param b Matriz columna respuesta
-* @return x Matriz de incognitas
-*/
     /***
      * Resuelve un sistema Ax=b donde A es una matriz triangular inferior (sustitucion hacia adelante)
      * El tercer parametro se agrega para no tener que almacenar L y U en matrices diferentes y poder hacer factorización
@@ -193,6 +187,23 @@ public:
      * @return norma vectorial
      */
     static double normaVectorial(const Mat<T> &A);
+
+    /**
+     * Calcula un autovalor de la matriz A con el metodo de potencia ( Av = lambda*v)
+     * @param A matriz
+     * @param v vector
+     * @param iter numero maximo de iteraciones.
+     * @return autovalor
+     */
+    static double calcularAutovalor(Mat<T> &A , Mat<T> &v, int iter);
+
+    /**
+     * Modifica la matriz original con la deflacion para obtener los autovalores 0,a2,a3.. con autovectores asociados v1,v2...
+     * @param A matriz
+     * @param v1 autovector asociado al autovalor a1
+     * @param a1 autovalor.
+     */
+    static void deflacion(Mat<T> &A , Mat<T> &v1, double a1);
 
     /**
      * Operador de acceso para clase Mat. Equivalente a Mat[fila][columna]
@@ -784,6 +795,35 @@ int Mat<T>::MatrixInversion(Mat<T>& AInverse) {
 
 //    free(ac);
     return 1;
+}
+
+template <typename T>
+double Mat<T>::calcularAutovalor(Mat<T> &A , Mat<T> &v, int iter){ // Algoritmo basado en la diapo de la clase.
+
+    double autoval;
+    for(int i = 0 ; i < iter; i++){
+        v = A*v;
+        double norma = Mat<double>::normaVectorial(v);
+        v = v*(1/norma);
+    }
+    Mat<double> vt = v;
+    vt.transpuesta(vt);
+    Mat<double> denominador = vt*v; //Es una matriz de 1x1 , en realidad es el producto interno de dos vectores
+    Mat<double> numerador = vt*(A*v); // Es una matriz de 1x1 , es el producto interno de dos vectores;
+
+    autoval = numerador(0,0)/denominador(0,0);
+
+    return autoval;  // en v queda guardado el autovector asociado al autovalor
+}
+
+
+template <typename T>
+void Mat<T>::deflacion(Mat<T> &A , Mat<T> &v1, double a1){
+// Sacado de la diapo de clase : (A - a1*v1*v1^(t))v_i = A*v_i - a1v1(v1^t *v_i) = a_i*v_i
+// Esta funcion calcula (A-a1*v1*v1^(t))
+    Mat<T> v1t = v1;
+    v1t.transpuesta(v1t);
+    A = A - (a1* (v1*v1t));
 }
 
 

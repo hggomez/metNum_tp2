@@ -10,4 +10,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -ggdb3")
 file(GLOB SOURCE_FILES  src/*.h src/*.cpp)
 
 # Creamos el ejecutable para correr el main
-add_executable(correrMain ${SOURCE_FILES} src/Lectura.cpp)
+add_executable(correrMain ${SOURCE_FILES})
