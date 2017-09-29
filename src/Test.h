@@ -11,7 +11,7 @@
 void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, int k_kfold);
 
 
-void correr_Test(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint), int tipo_test);
+void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint), const string& nombre_archivo, const string& nombre_metodo);
 
 
 

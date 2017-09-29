@@ -6,7 +6,7 @@
 
 using namespace std;
 
-double distancia(const Mat<uint>& A, const Mat<uint>& B) {
+double distancia(const Mat<double>& A, const Mat<double>& B) {
     double res = 0.0;
     for (int i = 0; i < A.filas(); ++i) {
         for (int j = 0; j < A.columnas(); ++j) {

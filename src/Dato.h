@@ -16,7 +16,6 @@ struct Dato {
     Etiqueta etiqueta;
 
     Dato(Mat<double> foto, Etiqueta valor): imagen(foto), etiqueta(valor){}
-
 };
 
 
