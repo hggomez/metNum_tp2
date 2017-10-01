@@ -6,7 +6,7 @@
 
 void KNN(Dato& A, const vector<Dato>& training, uint k);
 
-void PCA(const vector<Dato>& training, int alpha);
+void PCA(vector<Dato>& training, int alpha);
 
 
 

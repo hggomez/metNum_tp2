@@ -1,33 +1,144 @@
 #include <algorithm>
 #include <queue>
 #include <complex>
+#include <sstream>
+#include <iostream>
+#include <string>
+#include <fstream>
 
 #include "Metodos_de_Resolucion.h"
 
 using namespace std;
 
-void PCA(const vector<Dato>& training, int alpha){
+template <typename T>
+Mat<T> construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(1) ,x(2), ... en T
 
+    int dimdelDato = S[0].columnas(); // S[0] obtenemos una fila que representa una imagen con Mat. Como todas las imagenes
+    // tienen el mismo tamanio le pido a una.
+
+    Mat<T> X = Mat<T>( S.size(), dimdelDato);
+
+
+    int contador = 0;    //podria tener un iterador del vector pero paja, dsps viene Nico el limpiador de codigo
+    for (int fila = 0; fila < X.filas(); fila++) { // Recordar que X( Tam de T , Dimension del dato S[i] = columnas S[i]
+        Mat<T> vect = S[contador]; // Obtengo la primer imagen
+        for (int columna = 0; columna < X.columnas(); columna++) {
+            X(fila, columna) = vect(0, columna); // Cada fila de X tendra almacenada una imagen
+        }
+        contador++; // Incremento el contador para tomar la proxima imagen , notar que  0 <= contador <= X.filas = S.size()
+    }
+
+    //Hasta aca tengo la X , ahora hay que centrarla
+
+
+    double raiz = sqrt(X.filas() - 1 ); // Obtenemos sqrt(n-1) , n es la dimension de la base original S.size = X.filas
+    raiz = pow(raiz,-1); // Queremos multiplicar por 1/raiz
+
+    vector<double> medias; // Vamos a crear un vector de medias, media[i] corresponde a la media de la columna i de X.
+    // notar que 0 <= medias.size() <= X.columnas()
+
+
+
+    for(int columna = 0; columna < X.columnas(); columna++ ){ //Calculo cada media por columna
+        double acum = 0;
+        for(int i = 0 ; i < X.filas(); i++){
+            acum = acum + X(i,columna);
+        }
+        double media = acum/X.filas();
+        medias.push_back(media);
+    }
+
+    for(int columna = 0; columna < X.columnas(); columna++){
+        for(int fila = 0; fila < X.filas();fila++){
+            X(fila,columna) = X(fila,columna) - medias[columna];
+        }
+    }
+
+    // Ahora la matriz se multiplica por el escalar 1/sqrt(n-1)
+
+    X = X*(raiz);
+
+    return X;
+}
+
+void calcular_MatrizVt(const vector<Dato>& training, int iter){
     vector< Mat<double> > imag;
 
     for(int i = 0; i < training.size() ; i++){
         imag.push_back(training[i].imagen);
     } //Obtenemos solo las imagenes del training
 
-    Mat<double> X = Mat<double>::construiryCentrarX(imag);
+    Mat<double> X = construiryCentrarX(imag);
 
     Mat<double> Xt = X;
     Mat<double>::transpuesta(Xt); // Tomamos la transpuesta de X
 
     Mat<double> Mcov = (Xt*X);
 
-    //Mcov es la matriz de coviarianza que es simetrica. Diagonalizamos Mcov y obtenemos Vt (ortogonal) que tiene los autovectores de Mcov
+    vector<double> autovalores;
 
-   // Mat<T> Vt = Mat<T>()
+    Mat<double>::baseAutovectores(Mcov,autovalores,iter); //Escribe la matriz Vt en el archivo base_autovec.txt
+}
 
-   // vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter,int alpha)
 
-    // Finalmente el cambio de base del training es igual a Vt*Xt
+void PCA(vector<Dato>& training, int alpha){
 
+    string line;
+    ifstream autovec_archivo ("../src/base_autovec.txt");
+    int filaVt;
+    int columVt;
+    autovec_archivo >> filaVt;
+    autovec_archivo.ignore(numeric_limits<streamsize>::max(),',');
+    autovec_archivo >> columVt;
+    autovec_archivo.ignore(numeric_limits<streamsize>::max(),'\n'); //Salteo la primer linea de dimension
+    autovec_archivo.ignore(numeric_limits<streamsize>::max(),'\n'); // Salteo la 2da linea de autovalores
+    autovec_archivo.ignore(numeric_limits<streamsize>::max(),'\n'); // Salteo la declaracion de la matriz
+
+    Mat<double> Vt = Mat<double>(alpha,columVt);
+
+    if (autovec_archivo.is_open()) {
+       int i = 0;
+        while(i< alpha && i < filaVt) {
+            getline (autovec_archivo,line);
+            istringstream s(line);
+            double val;
+            int j = 0;
+            while (s >> val) {
+                Vt(i, j) = val;
+                j++;
+            }
+            i++;
+        }
+        autovec_archivo.close();
+    }
+
+    else cout << "Unable to open file";
+
+
+    // Procedemos a realizar el cambio de base del training que es igual a Vt*Xt
+    // Construimos la X
+    vector< Mat<double> > imag;
+
+    for(int i = 0; i < training.size() ; i++){
+        imag.push_back(training[i].imagen);
+    } //Obtenemos solo las imagenes del training
+
+    Mat<double> X = construiryCentrarX(imag); // X(#imagen,dimImagen)
+
+    Mat<double> Xt = X;
+    Mat<double>::transpuesta(Xt); // Tomamos la transpuesta de X
+
+    // Notar que Vt(alpha,dimImagen) Xt(dimImagen,#imagenes) -> nuevaBase(alpha,#imagenes) , es decir, la columnas de nuevaBase
+    // son las imagenes de la nueva base. #imagenes = training.size()
+    Mat<double> nuevaBase = Vt*Xt;
+
+
+        for (int columna = 0; columna < nuevaBase.columnas(); columna++) {
+            Mat<double> colj = Mat<double>(nuevaBase.filas(), 1);
+            for (int fila = 0; fila < nuevaBase.filas(); fila++) {
+                colj(fila, 0) = nuevaBase(fila,columna);
+            }
+            training[columna].imagen = colj;
+        }
 
 }

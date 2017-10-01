@@ -10,9 +10,9 @@
 
 using namespace std;
 
-void generar_training(vector<Dato>& resultado, const string& training_set_filePath) {
+void cargar_training(vector<Dato> &resultado, const string &training_set_filePath) {
 
-    cerr << "Generando training..." << endl;
+    cerr << "Cargando training...";
 
     ifstream data;
     data.open(training_set_filePath);
@@ -29,7 +29,7 @@ void generar_training(vector<Dato>& resultado, const string& training_set_filePa
 
         if (*it != '\000' && *it != EOF && *it != '\r') {
 
-            Dato nueva_imagen(Mat<uint>(1, 28*28), (Etiqueta) (*it - 48));
+            Dato nueva_imagen(Mat<double>(1, 28*28), (Etiqueta) (*it - 48));
             advance(it, 2);
             leer_matriz(nueva_imagen.imagen,it);
             resultado.push_back(nueva_imagen);
@@ -38,9 +38,10 @@ void generar_training(vector<Dato>& resultado, const string& training_set_filePa
         }
     }
     data.close();
+    cerr<<"carga finalizada."<<endl;
 }
 
-void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
+void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
     cerr << "Generando casos de test..." << endl;
 
     ifstream data;
@@ -56,7 +57,7 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
         getline(data, pre_parseo);
         auto it = pre_parseo.begin();
         if (*it != '\000' && *it != EOF && *it != '\r') {
-            Dato nueva_imagen(Mat<uint>(1, 28*28), 10);
+            Dato nueva_imagen(Mat<double>(1, 28*28), 10);
             leer_matriz(nueva_imagen.imagen,it);
             resultado.push_back(nueva_imagen);
 
@@ -67,7 +68,7 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
 }
 
 template <typename Iterator>
-void leer_matriz(Mat<uint>& resultado, Iterator& it) {
+void leer_matriz(Mat<double>& resultado, Iterator& it) {
 
     //leo cada posicion de la matriz
     for (uint i = 0; i < 28*28; ++i) {
