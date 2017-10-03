@@ -26,12 +26,17 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
     vector< deque<int> > buckets(10);
     bitset<42000> testing_map;
     vector<int> subset_sizes(10);
+
+    string file_name;
     ofstream file;
 
+
     int alpha = desde_alpha;
-    while(alpha < hasta_alpha){
-        file.open(to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in", ios_base::trunc);
+    while(alpha <= hasta_alpha){
+        file_name = to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in";
+        file.open(file_name, ios_base::trunc);
         file << "../sets/ " <<  k_nn << " " << alpha << " " << k_kfold << endl;
+        file.close();
         alpha += skip_alpha;
     }
     for (int i = 0; i < data.size(); ++i) {
@@ -56,11 +61,13 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
             }
         }
         int alpha = desde_alpha;
-        while(alpha < hasta_alpha){
-            file.open(to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in", ios_base::app);
+        while(alpha <= hasta_alpha){
+            file_name = to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in";
+            file.open(file_name, ios_base::app);
             for (int k = 0; k < data.size(); ++k) {
                 file << testing_map[k] << " ";
             } file << endl;
+            file.close();
             alpha += skip_alpha;
         }
         testing_map.reset();
