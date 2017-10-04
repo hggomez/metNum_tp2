@@ -20,6 +20,70 @@ void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& t
 }
 
 
+void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, int k_kfold) {
+    //CHEQUEAR QUE K_KFOLD SEA MENOR QUE EL TAMAÑO DE CADA BUCKET
+    // for (int i = 0; i < 10; ++i) {
+ //        throw std::out_of_range("mat_ con 0 filas o 0 columnas");
+ //    }
+
+    string data_file_name = "../sets/train.csv";
+    vector<Dato> data;
+    cargar_training(data, data_file_name);
+        
+    vector< deque<int> > buckets(10);
+    bitset<42000> testing_map;
+    vector<int> subset_sizes(10);
+
+    string file_name;
+    ofstream file;
+
+
+    int alpha = desde_alpha;
+    while(alpha <= hasta_alpha){
+        file_name = to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in";
+        file.open(file_name, ios_base::trunc);
+        file << "../sets/ " <<  k_nn << " " << alpha << " " << k_kfold << endl;
+        file.close();
+        alpha += skip_alpha;
+    }
+    for (int i = 0; i < data.size(); ++i) {
+        buckets[data[i].etiqueta].push_back(i);
+    }
+    for (int i = 0; i < buckets.size(); ++i) {
+        subset_sizes[i] = (int) round(buckets[i].size() / k_kfold); 
+        random_shuffle(buckets[i].begin(), buckets[i].end());
+    }
+    for (int i = 0; i < k_kfold; ++i){
+        for(int j = 0; j < buckets.size(); ++j) {
+            if(i < k_kfold) { 
+                for (int k = 0; k < subset_sizes[j]; ++k) {
+                    testing_map[buckets[j].back()] = 1;
+                    buckets[j].pop_back();
+                }
+            } else {
+                while (!buckets[j].empty()) {
+                    testing_map[buckets[j].back()] = 1;
+                    buckets[j].pop_back();
+                }
+            }
+        }
+        int alpha = desde_alpha;
+        while(alpha <= hasta_alpha){
+            file_name = to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in";
+            file.open(file_name, ios_base::app);
+            for (int k = 0; k < data.size(); ++k) {
+                file << testing_map[k] << " ";
+            } file << endl;
+            file.close();
+            alpha += skip_alpha;
+        }
+        testing_map.reset();
+    }
+}
+
+//por ahora vamos a usar recall y f_score de M y no mu son dos formas distintas que no se muy bien como se diferencian
+//hacemos esto como primer idea ya que acuraccy tiene una cuenta muy parecida a las M
+
 void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint),const string& nombre_archivo, const string& nombre_metodo){
     //Lectura de datos
     ifstream k_fold_file;
