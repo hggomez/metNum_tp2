@@ -76,8 +76,9 @@ void calcular_MatrizVt(const vector<Dato>& training, int iter){
     Mat<double> Mcov = (Xt*X);
 
     vector<double> autovalores;
-
+    cerr<<"calcule la Matriz de covarianza\n";
     Mat<double>::baseAutovectores(Mcov,autovalores,iter); //Escribe la matriz Vt en el archivo base_autovec.txt
+    cerr<<"termine de calcular la baseAutovectores\n";
 }
 
 
@@ -85,8 +86,15 @@ void PCA(vector<Dato>& training, int alpha){
 
     string line;
     ifstream autovec_archivo ("../src/base_autovec.txt");
+
     int filaVt;
     int columVt;
+    if(!autovec_archivo.is_open()){
+        cerr<<"calculo la matriz por primera vez\n";
+        calcular_MatrizVt(training, 100);
+        autovec_archivo.open("../src/base_autovec.txt", ios_base::in);
+        cerr<<"termine de calcular la matriz\n";
+    }
     autovec_archivo >> filaVt;
     autovec_archivo.ignore(numeric_limits<streamsize>::max(),',');
     autovec_archivo >> columVt;
@@ -127,11 +135,11 @@ void PCA(vector<Dato>& training, int alpha){
 
     Mat<double> Xt = X;
     Mat<double>::transpuesta(Xt); // Tomamos la transpuesta de X
-
+    cerr<<"Traspuse X\n";
     // Notar que Vt(alpha,dimImagen) Xt(dimImagen,#imagenes) -> nuevaBase(alpha,#imagenes) , es decir, la columnas de nuevaBase
     // son las imagenes de la nueva base. #imagenes = training.size()
     Mat<double> nuevaBase = Vt*Xt;
-
+    cerr<<"cambie la base\n";
 
         for (int columna = 0; columna < nuevaBase.columnas(); columna++) {
             Mat<double> colj = Mat<double>(nuevaBase.filas(), 1);
@@ -139,6 +147,7 @@ void PCA(vector<Dato>& training, int alpha){
                 colj(fila, 0) = nuevaBase(fila,columna);
             }
             training[columna].imagen = colj;
+            cerr<<"asigne la nueva imagen";
         }
 
 }

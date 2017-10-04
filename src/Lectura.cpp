@@ -42,7 +42,7 @@ void cargar_training(vector<Dato> &resultado, const string &training_set_filePat
 }
 
 void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
-    cerr << "Generando casos de test..." << endl;
+    cerr << "Cargando casos de test..." << endl;
 
     ifstream data;
     data.open(test_set_filePath);
@@ -65,6 +65,7 @@ void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
         }
     }
     data.close();
+    cerr<<"carga finalizada."<<endl;
 }
 
 template <typename Iterator>
