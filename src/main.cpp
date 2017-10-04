@@ -11,13 +11,17 @@ void run_method(ofstream& output, const int repeticiones, F func, vector<Dato>& 
     output << "ImageId,Label,Tiempo,Metodo" << endl;
 
     for (int id = 1; id <= test_set.size(); ++id) {
-        cerr << "id: " << id << endl;
+        cerr << "id: " << id;
+        cerr << " label: " << test_set[id].etiqueta << endl;
 
-        auto tiempo = measure<chrono::microseconds>::execution(repeticiones, func, test_set[id-1], training_set, args... );
+        if (test_set[id].etiqueta == 8){
+            auto tiempo = measure<chrono::microseconds>::execution(repeticiones, func, test_set[id-1], training_set, args... );
 
-        cerr <<  "Resultado: ";
-        output << id << ',' << training_set[id-1].etiqueta << ',' << tiempo << ",KNN" << endl;
-        cerr << endl;
+            cerr <<  "Resultado: ";
+            output << id << ',' << test_set[id-1].etiqueta << ',' << tiempo << ",KNN" << endl;
+            cerr << endl;
+        }
+
     }
 }
 
@@ -51,10 +55,11 @@ int main(int argc, char const *argv[]) {
 
     int k = 15;
     int repeticiones = 1;
+    double distancia_max = distancia_maxima(training_set);
 
     switch(method) {
         case 0:
-            run_method(output_file, repeticiones, KNN, test_set, training_set, k);
+            run_method(output_file, repeticiones, KNN_distancia, training_set, training_set, k, distancia_max);
             break;
         case 1:
 //            func = &pca+knn;

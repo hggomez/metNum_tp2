@@ -5,6 +5,7 @@
 #include<vector>
 #include<iostream>
 #include<fstream>
+#include <algorithm>
 
 #include "Lectura.h"
 
@@ -16,6 +17,15 @@ void generar_training(vector<Dato>& resultado, const string& training_set_filePa
 
     ifstream data;
     data.open(training_set_filePath);
+
+    auto cantidad_lineas = std::count(std::istreambuf_iterator<char>(data),
+                                      std::istreambuf_iterator<char>(),
+                                      '\n');
+
+    resultado.reserve(cantidad_lineas - 1);
+
+    data.clear();
+    data.seekg(0, ios::beg);
 
     string header;
     getline(data, header);
@@ -29,7 +39,7 @@ void generar_training(vector<Dato>& resultado, const string& training_set_filePa
 
         if (*it != '\000' && *it != EOF && *it != '\r') {
 
-            Dato nueva_imagen(Mat<uint>(28, 28), (Etiqueta) (*it - 48));
+            Dato nueva_imagen(Mat<double>(28, 28), (Etiqueta) (*it - 48));
             advance(it, 2);
             leer_matriz(nueva_imagen.imagen,it);
             resultado.push_back(nueva_imagen);
@@ -46,6 +56,16 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
     ifstream data;
     data.open(test_set_filePath);
 
+
+    auto cantidad_lineas = std::count(std::istreambuf_iterator<char>(data),
+                                      std::istreambuf_iterator<char>(),
+                                      '\n');
+
+    resultado.reserve(cantidad_lineas - 1);
+
+    data.clear();
+    data.seekg(0, ios::beg);
+
     string header;
     getline(data, header);
     int linea = 2;
@@ -58,7 +78,7 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
 
         if (*it != '\000' && *it != EOF && *it != '\r') {
 
-            Dato nueva_imagen(Mat<uint>(28, 28), 10);
+            Dato nueva_imagen(Mat<double>(28, 28), 10);
             leer_matriz(nueva_imagen.imagen,it);
             resultado.push_back(nueva_imagen);
 
@@ -69,7 +89,7 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
 }
 
 template <typename Iterator>
-void leer_matriz(Mat<uint>& resultado, Iterator& it) {
+void leer_matriz(Mat<double>& resultado, Iterator& it) {
 
     //leo cada posicion de la matriz
     for (uint i = 0; i < 28; ++i) {
