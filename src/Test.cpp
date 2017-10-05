@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& test, ifstream& k_fold_file,vector<int>& etiquetas_Reales){
+void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& test, ifstream& k_fold_file) {
     for(int j = 0; j<datos.size(); ++j){
         bool train;
         k_fold_file >> train;
@@ -13,7 +13,6 @@ void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& t
             training.push_back(datos[j]);
         } else {
             test.push_back(datos[j]);
-            etiquetas_Reales[datos[j].etiqueta]++;
         }
     }
 }
@@ -117,7 +116,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
     //header
     string archivo = nombre_metodo;
     if(correr_PCA) archivo +="PCA";
-    archivo += "_"+nombre_archivo+".csv"
+    archivo += "_"+nombre_archivo+".csv";
     output.open(archivo, ios_base::app);
     for(int i = 0;i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
