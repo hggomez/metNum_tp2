@@ -40,8 +40,8 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
 
     int alpha = desde_alpha;
     while(alpha <= hasta_alpha){
-        file_name = to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in";
-        file.open(file_name, ios_base::trunc);
+        file_name = "k_" + to_string(k_nn)+"-alpha_"+to_string(alpha)+"-kfold_"+to_string(k_kfold)+".in";
+        file.open("../tests/" + file_name, ios_base::trunc);
         file << "../sets/ " <<  k_nn << " " << alpha << " " << k_kfold << endl;
         file.close();
         alpha += skip_alpha;
@@ -69,8 +69,8 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
         }
         int alpha = desde_alpha;
         while(alpha <= hasta_alpha){
-            file_name = to_string(k_nn)+"_"+to_string(alpha)+"_"+to_string(k_kfold)+".in";
-            file.open(file_name, ios_base::app);
+            file_name = "k_" + to_string(k_nn)+"-alpha_"+to_string(alpha)+"-kfold_"+to_string(k_kfold)+".in";
+            file.open("../tests/" + file_name, ios_base::app);
             for (int k = 0; k < data.size(); ++k) {
                 file << testing_map[k] << " ";
             } file << endl;
