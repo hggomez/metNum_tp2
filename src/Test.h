@@ -17,7 +17,7 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
 
 void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& test, ifstream& k_fold_file);
 
-void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint), const string& nombre_archivo, const string& nombre_metodo);
+void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint), const string& nombre_archivo, const string& nombre_metodo, bool correr_PCA);
 
 
 

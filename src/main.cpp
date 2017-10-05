@@ -34,10 +34,11 @@ string getCmdOption(const char* argv[], int argc, const std::string & option)  {
 
 int main(int argc, char const *argv[]) {
 
-//    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
-//    metodo_resolucion = KNN;
-//    correr_Cross_Val(metodo_resolucion, "test1", "KNN");
+    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
+    metodo_resolucion = KNN;
+    correr_Cross_Val(metodo_resolucion, "test1", "KNN", true);
 
+    /*
 
     int method = stoi(getCmdOption(argv, argc, "-m"));
     string train_set_filepath = getCmdOption(argv, argc, "-i");
@@ -73,6 +74,8 @@ int main(int argc, char const *argv[]) {
     }
 
     output_file.close();
+
+     */
 
     return 0;
 }

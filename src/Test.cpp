@@ -89,7 +89,7 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
 //por ahora vamos a usar recall y f_score de M y no mu son dos formas distintas que no se muy bien como se diferencian
 //hacemos esto como primer idea ya que acuraccy tiene una cuenta muy parecida a las M
 
-void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint),const string& nombre_archivo, const string& nombre_metodo, bool correr_PCA){
+void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint),const string& nombre_archivo, const string& nombre_metodo, bool correr_PCA) {
     //Lectura de datos
     ifstream k_fold_file;
     k_fold_file.open("../tests/" + nombre_archivo + ".in");
