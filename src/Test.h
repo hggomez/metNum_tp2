@@ -9,6 +9,9 @@
 #include "Measure.h"
 #include <fstream>
 #include "Lectura.h"
+#include <bitset>
+#include <deque>
+#include <algorithm>
 
 void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, int k_kfold);
 
