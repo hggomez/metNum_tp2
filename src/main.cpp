@@ -5,23 +5,20 @@
 #include "Measure.h"
 #include "Lectura.h"
 #include "Metodos_de_Resolucion.h"
+#include "Test.h"
 
 template <typename F, typename... Args>
 void run_method(ofstream& output, const int repeticiones, F func, vector<Dato>& test_set, const vector<Dato>& training_set, Args&&... args) {
     output << "ImageId,Label,Tiempo,Metodo" << endl;
 
     for (int id = 1; id <= test_set.size(); ++id) {
-        cerr << "id: " << id;
-        cerr << " label: " << test_set[id].etiqueta << endl;
+        cerr << "id: " << id << endl;
 
-        if (test_set[id].etiqueta == 8){
-            auto tiempo = measure<chrono::microseconds>::execution(repeticiones, func, test_set[id-1], training_set, args... );
+        auto tiempo = measure<chrono::microseconds>::execution(repeticiones, func, test_set[id-1], training_set, args... );
 
-            cerr <<  "Resultado: ";
-            output << id << ',' << test_set[id-1].etiqueta << ',' << tiempo << ",KNN" << endl;
-            cerr << endl;
-        }
-
+        cerr <<  "Resultado: ";
+        output << id << ',' << test_set[id-1].etiqueta << ',' << tiempo << ",KNN" << endl;
+        cerr << endl;
     }
 }
 
@@ -37,6 +34,11 @@ string getCmdOption(const char* argv[], int argc, const std::string & option)  {
 
 int main(int argc, char const *argv[]) {
 
+//    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
+//    metodo_resolucion = KNN;
+//    correr_Cross_Val(metodo_resolucion, "test1", "KNN");
+
+
     int method = stoi(getCmdOption(argv, argc, "-m"));
     string train_set_filepath = getCmdOption(argv, argc, "-i");
     string test_set_filepath = getCmdOption(argv, argc, "-q");
@@ -44,17 +46,18 @@ int main(int argc, char const *argv[]) {
 
 
     vector<Dato> training_set;
-    generar_training(training_set, train_set_filepath);
+    cargar_training(training_set, train_set_filepath);
 
     vector<Dato> test_set;
-    generar_test(test_set, test_set_filepath);
+    cargar_test(test_set, test_set_filepath);
 
     ofstream output_file;
     output_file.open(output_filepath, fstream::out);
 
 
-    int k = 15;
+    int k = 99;
     int repeticiones = 1;
+
     double distancia_max = distancia_maxima(training_set);
 
     switch(method) {

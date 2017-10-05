@@ -8,6 +8,8 @@
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
+#include <string>
 
 #define EPS 0//1e-10 //Epsilon para la eliminacion gaussiana
 
@@ -213,7 +215,7 @@ public:
     * @param autovalores
     * @param iteraciones para calcular autovalor.
     */
-    static vector< Mat<T> > baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter, int alpha);
+    static void baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter);
 
     /**
     * Crea una matriz con numeros al azar
@@ -226,19 +228,6 @@ public:
     * @param A matriz
     */
     static bool esNulo(Mat<T> &A);
-
-
-    /**
-    * Construye la matriz X y la centra calculando mu y multiplicando por el escalar 1/sqrt(n-1)
-    * @param S conjunto de datos representado como vector de matrices
-    */
-    static Mat<T> construiryCentrarX(vector< Mat<T> > &S);
-
-    /**
-    * Toma el conjunto de datos y obtiene la matriz de covarianza
-    * @param S conjunto de datos
-    */
-    static Mat<T> obtenerMcov(vector< Mat<T> > &S);
 
     /**
      * Operador de acceso para clase Mat. Equivalente a Mat[fila][columna]
@@ -884,93 +873,54 @@ bool Mat<T>::esNulo(Mat<T> &A){
 }
 
 template <typename T>
-vector< Mat<T> > Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter,int alpha){
-    vector< Mat<T> > base; // Guardamos la base como un Conjunto de vectores que se representa con vector de Mat
-    Mat<T> v = Mat(A.filas(),1); // Inicializamos el vector x0 que va a ser random
-    for(int i = 0 ; i < alpha ; i ++){
+void Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter){
+    vector<Mat<T> > base; // Guardamos la base como un Conjunto de vectores que se representa con vector de Mat
+    Mat<T> v = Mat(A.filas(), 1); // Inicializamos el vector x0 que va a ser random
+    for (int i = 0; i < A.filas(); i++) {
 
         Mat<T>::randomizar(v); // Tomamos un vector random
-        Mat<T> r = A*v; // Precalculamos A*v para asegurarnos que no de 0
-        while( Mat<T>::esNulo(v) && Mat<T>::esNulo(r)) { // Hay que chequear que el vector x0 no sea 0 y que A*x0 no sea 0
+        Mat<T> r = A * v; // Precalculamos A*v para asegurarnos que no de 0
+        while (Mat<T>::esNulo(v) &&
+               Mat<T>::esNulo(r)) { // Hay que chequear que el vector x0 no sea 0 y que A*x0 no sea 0
             Mat<T>::randomizar(v);
-            r = A*v;
+            r = A * v;
         } // Si v no es nulo y A*v tampoco podemos calcular el autovalor
 
-        double a = calcularAutovalor(A,v,iter);
+        double a = calcularAutovalor(A, v, iter);
 
         autovalores.push_back(a);
         base.push_back(v);
-        deflacion(A,v,a); //Una vez que tenemos el autovalor
+        deflacion(A, v, a); //Una vez que tenemos el autovalor
     }
 
-    return base;
+    ofstream myfile;
 
-}
+    myfile.open("../src/base_autovec.txt");
+    int Mfila = base.size(); // Filas de la matriz grande es la cant de autovectores
+    int Mcol = base[0].filas(); // Las columnas de la matriz es igual a la dimension de los autovectores
+    myfile << Mfila << "," << Mcol << endl;
 
+    for(int i = 0; i < autovalores.size(); i++){
+        myfile << autovalores[i] << " ";
+    }
+    myfile << "\n";
+    myfile << "Matriz de autovectores : " << endl;
 
-template <typename T>
-Mat<T> Mat<T>::construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(1) ,x(2), ... en T
+    int contador = 0;
+    for(int i = 0 ; i < Mfila;  i++){
+        Mat<T> autovec = base[i];
+        for(int j = 0; j < Mcol; j++){
 
-    int dimdelDato = S[0].columnas(); // S[0] obtenemos una fila que representa una imagen con Mat. Como todas las imagenes
-    // tienen el mismo tamanio le pido a una.
-
-    Mat<T> X = Mat<T>( S.size(), dimdelDato);
-
-
-    int contador = 0;    //podria tener un iterador del vector pero paja, dsps viene Nico el limpiador de codigo
-    for (int fila = 0; fila < X.filas(); fila++) { // Recordar que X( Tam de T , Dimension del dato S[i] = columnas S[i]
-        Mat<T> vect = S[contador]; // Obtengo la primer imagen
-        for (int columna = 0; columna < X.columnas(); columna++) {
-            X(fila, columna) = vect(0, columna); // Cada fila de X tendra almacenada una imagen
+            myfile << autovec(j,0) << " ";
+            if(j + 1 == Mcol) {
+                myfile << "\n"; //Si llegue al final voy a la proxima fila
+            }
         }
-        contador++; // Incremento el contador para tomar la proxima imagen , notar que  0 <= contador <= X.filas = S.size()
+        contador++;
     }
 
-    //Hasta aca tengo la X , ahora hay que centrarla
 
-
-    double raiz = sqrt(X.filas() - 1 ); // Obtenemos sqrt(n-1) , n es la dimension de la base original S.size = X.filas
-    raiz = pow(raiz,-1); // Queremos multiplicar por 1/raiz
-
-    vector<double> medias; // Vamos a crear un vector de medias, media[i] corresponde a la media de la columna i de X.
-    // notar que 0 <= medias.size() <= X.columnas()
-
-
-
-    for(int columna = 0; columna < X.columnas(); columna++ ){ //Calculo cada media por columna
-        double acum = 0;
-        for(int i = 0 ; i < X.filas(); i++){
-            acum = acum + X(i,columna);
-        }
-        double media = acum/X.filas();
-        medias.push_back(media);
-    }
-
-    for(int columna = 0; columna < X.columnas(); columna++){
-        for(int fila = 0; fila < X.filas();fila++){
-            X(fila,columna) = X(fila,columna) - medias[columna];
-        }
-    }
-
-    // Ahora la matriz se multiplica por el escalar 1/sqrt(n-1)
-
-    X = X*(raiz);
-
-    return X;
+    myfile.close();
 }
-
-template <typename T>
-Mat<T> Mat<T>::obtenerMcov(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(1) ,x(2), ...
-
-    Mat<T> X = construiryCentrarX(S);
-
-    Mat<T> Xt = X;
-    Mat<T>::transpuesta(Xt); // Tomamos la transpuesta de X
-
-    Mat<T> Mcov = (Xt*X);
-
-}
-
-
 
 #endif //METODOS_TP1_MAT_H

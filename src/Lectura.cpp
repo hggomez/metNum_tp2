@@ -5,15 +5,14 @@
 #include<vector>
 #include<iostream>
 #include<fstream>
-#include <algorithm>
 
 #include "Lectura.h"
 
 using namespace std;
 
-void generar_training(vector<Dato>& resultado, const string& training_set_filePath) {
+void cargar_training(vector<Dato> &resultado, const string &training_set_filePath) {
 
-    cerr << "Generando training..." << endl;
+    cerr << "Cargando training...";
 
     ifstream data;
     data.open(training_set_filePath);
@@ -39,7 +38,7 @@ void generar_training(vector<Dato>& resultado, const string& training_set_filePa
 
         if (*it != '\000' && *it != EOF && *it != '\r') {
 
-            Dato nueva_imagen(Mat<double>(28, 28), (Etiqueta) (*it - 48));
+            Dato nueva_imagen(Mat<double>(1, 28*28), (Etiqueta) (*it - 48));
             advance(it, 2);
             leer_matriz(nueva_imagen.imagen,it);
             resultado.push_back(nueva_imagen);
@@ -48,10 +47,11 @@ void generar_training(vector<Dato>& resultado, const string& training_set_filePa
         }
     }
     data.close();
+    cerr<<"carga finalizada."<<endl;
 }
 
-void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
-    cerr << "Generando casos de test..." << endl;
+void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
+    cerr << "Cargando casos de test..." << endl;
 
     ifstream data;
     data.open(test_set_filePath);
@@ -77,8 +77,7 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
         auto it = pre_parseo.begin();
 
         if (*it != '\000' && *it != EOF && *it != '\r') {
-
-            Dato nueva_imagen(Mat<double>(28, 28), 10);
+            Dato nueva_imagen(Mat<double>(1, 28*28), 10);
             leer_matriz(nueva_imagen.imagen,it);
             resultado.push_back(nueva_imagen);
 
@@ -86,34 +85,33 @@ void generar_test(vector<Dato>& resultado, const string& test_set_filePath) {
         }
     }
     data.close();
+    cerr<<"carga finalizada."<<endl;
 }
 
 template <typename Iterator>
 void leer_matriz(Mat<double>& resultado, Iterator& it) {
 
     //leo cada posicion de la matriz
-    for (uint i = 0; i < 28; ++i) {
-        for (uint j = 0; j < 28; ++j) {
-            //como no se cuantos digitos tengo y estoy iterando
-            //sobre caracter creo un string donde almacenar el numero
-            string numero;
-            //si no es ',' entonces es un numero y es el que quiero concatenar
+    for (uint i = 0; i < 28*28; ++i) {
+        //como no se cuantos digitos tengo y estoy iterando
+        //sobre caracter creo un string donde almacenar el numero
+        string numero;
+        //si no es ',' entonces es un numero y es el que quiero concatenar
 
-            while (*it != ',' && *it != '\r') {
-                //sin esto, tendria que funcionar, pero si se lo sacas me pasaba que le pasaba
-                //a stoi un argumento invalido (creo que habia tabs o espacios o algo que no le gusto
-                if ('0' <= *it && *it <= '9') numero += *it;
-                ++it;
-            }
-
-            //despues de debuggear un rato entiendo cada vez menos, a veces numero es un string MUY largo
-            //lo cual puede ser la razon del out_of_range... pero no se donde esta el error
-
-            if (!numero.empty())
-                resultado(i, j) = (uint) stoi(numero);
-
-            //estoy en la ',' asi que avanzo el iterador al proximo numero.
+        while (*it != ',' && *it != '\r') {
+            //sin esto, tendria que funcionar, pero si se lo sacas me pasaba que le pasaba
+            //a stoi un argumento invalido (creo que habia tabs o espacios o algo que no le gusto
+            if ('0' <= *it && *it <= '9') numero += *it;
             ++it;
         }
+
+        //despues de debuggear un rato entiendo cada vez menos, a veces numero es un string MUY largo
+        //lo cual puede ser la razon del out_of_range... pero no se donde esta el error
+
+        if (!numero.empty())
+            resultado(0, i) = (uint) stoi(numero);
+
+        //estoy en la ',' asi que avanzo el iterador al proximo numero.
+        ++it;
     }
 }
