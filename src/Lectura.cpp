@@ -17,6 +17,15 @@ void cargar_training(vector<Dato> &resultado, const string &training_set_filePat
     ifstream data;
     data.open(training_set_filePath);
 
+    auto cantidad_lineas = std::count(std::istreambuf_iterator<char>(data),
+                                      std::istreambuf_iterator<char>(),
+                                      '\n');
+
+    resultado.reserve(cantidad_lineas - 1);
+
+    data.clear();
+    data.seekg(0, ios::beg);
+
     string header;
     getline(data, header);
     int linea = 2;
@@ -47,6 +56,16 @@ void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
     ifstream data;
     data.open(test_set_filePath);
 
+
+    auto cantidad_lineas = std::count(std::istreambuf_iterator<char>(data),
+                                      std::istreambuf_iterator<char>(),
+                                      '\n');
+
+    resultado.reserve(cantidad_lineas - 1);
+
+    data.clear();
+    data.seekg(0, ios::beg);
+
     string header;
     getline(data, header);
     int linea = 2;
@@ -56,6 +75,7 @@ void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
         string pre_parseo;
         getline(data, pre_parseo);
         auto it = pre_parseo.begin();
+
         if (*it != '\000' && *it != EOF && *it != '\r') {
             Dato nueva_imagen(Mat<double>(1, 28*28), 10);
             leer_matriz(nueva_imagen.imagen,it);

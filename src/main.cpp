@@ -34,11 +34,11 @@ string getCmdOption(const char* argv[], int argc, const std::string & option)  {
 
 int main(int argc, char const *argv[]) {
 
-    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
-    metodo_resolucion = KNN;
-    correr_Cross_Val(metodo_resolucion, "test1", "KNN");
+//    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
+//    metodo_resolucion = KNN;
+//    correr_Cross_Val(metodo_resolucion, "test1", "KNN");
 
-    /*
+
     int method = stoi(getCmdOption(argv, argc, "-m"));
     string train_set_filepath = getCmdOption(argv, argc, "-i");
     string test_set_filepath = getCmdOption(argv, argc, "-q");
@@ -55,12 +55,14 @@ int main(int argc, char const *argv[]) {
     output_file.open(output_filepath, fstream::out);
 
 
-    int k = 15;
+    int k = 99;
     int repeticiones = 1;
+
+    double distancia_max = distancia_maxima(training_set);
 
     switch(method) {
         case 0:
-            run_method(output_file, repeticiones, KNN, test_set, training_set, k);
+            run_method(output_file, repeticiones, KNN_distancia, training_set, training_set, k, distancia_max);
             break;
         case 1:
 //            func = &pca+knn;
@@ -71,6 +73,6 @@ int main(int argc, char const *argv[]) {
     }
 
     output_file.close();
-    */
+
     return 0;
 }
