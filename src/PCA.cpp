@@ -82,7 +82,7 @@ void calcular_MatrizVt(const vector<Dato>& training, int iter){
 }
 
 
-void PCA(vector<Dato>& training, int alpha){
+void PCA(vector<Dato>& training, int alpha) {
 
     string line;
     ifstream autovec_archivo ("../src/base_autovec.txt");

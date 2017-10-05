@@ -58,11 +58,11 @@ int main(int argc, char const *argv[]) {
     int k = 99;
     int repeticiones = 1;
 
-    double distancia_max = distancia_maxima(training_set);
+//    distancias_maximas(training_set);
 
     switch(method) {
         case 0:
-            run_method(output_file, repeticiones, KNN_distancia, training_set, training_set, k, distancia_max);
+            run_method(output_file, repeticiones, KNN_distancia, training_set, training_set, k);
             break;
         case 1:
 //            func = &pca+knn;

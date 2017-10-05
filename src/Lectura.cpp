@@ -5,6 +5,7 @@
 #include<vector>
 #include<iostream>
 #include<fstream>
+#include <algorithm>
 
 #include "Lectura.h"
 
@@ -12,7 +13,7 @@ using namespace std;
 
 void cargar_training(vector<Dato> &resultado, const string &training_set_filePath) {
 
-    cerr << "Cargando training...";
+    cerr << "Cargando training... ";
 
     ifstream data;
     data.open(training_set_filePath);
@@ -47,11 +48,11 @@ void cargar_training(vector<Dato> &resultado, const string &training_set_filePat
         }
     }
     data.close();
-    cerr<<"carga finalizada."<<endl;
+    cerr<<"terminado"<<endl;
 }
 
 void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
-    cerr << "Cargando casos de test..." << endl;
+    cerr << "Cargando casos de test... ";
 
     ifstream data;
     data.open(test_set_filePath);
@@ -85,7 +86,7 @@ void cargar_test(vector<Dato>& resultado, const string& test_set_filePath) {
         }
     }
     data.close();
-    cerr<<"carga finalizada."<<endl;
+    cerr<<"terminado"<<endl;
 }
 
 template <typename Iterator>

@@ -45,7 +45,9 @@ void KNN(Dato& A, const vector<Dato>& training, uint k) {
 }
 
 
-double distancia_maxima(const vector<Dato>& training_set) {
+void distancias_maximas(const vector<Dato>& training_set) {
+
+    cerr << "Calculando distancias maximas... ";
 
     vector<Dato> vacio;
     vacio.reserve(training_set.size() / 10);
@@ -59,23 +61,60 @@ double distancia_maxima(const vector<Dato>& training_set) {
 
     for (int k = 0; k < 10; ++k) {
         double maximo = 0.0;
-        double minimo = 0.0;
         for (int i = 0; i < imagenes_por_etiquetas[k].size(); ++i) {
             for (int j = i+1; j < imagenes_por_etiquetas[k].size(); ++j) {
                 double d = distancia(imagenes_por_etiquetas[k][i].imagen, imagenes_por_etiquetas[k][j].imagen);
                 maximo = ((maximo < d) ? d : maximo);
-                minimo = ((maximo > d) ? d : minimo);
             }
         }
         distancias[k] = maximo;
-        cout  << "maximo: " << k << ' ' << maximo << endl;
-        cout  << "minimo: " << k << ' ' << minimo << endl;
     }
 
-    return min_element(distancias.begin(), distancias.end()).operator*();
+    string output_filepath = "../data/distancias_maximas.csv";
+    ofstream output_file;
+
+    output_file.precision(std::numeric_limits<double>::max_digits10);
+
+    output_file.open(output_filepath, ios_base::trunc);
+
+    output_file << "Label,distancia maxima" << endl;
+    for (int i = 0; i < 10; ++i)
+        output_file << i << ',' << fixed << distancias[i] << endl;
+
+    output_file.close();
+
+    cerr << "terminado" << endl;
 }
 
-void KNN_distancia(Dato& A, const vector<Dato>& training, uint k, double distancia_max) {
+vector<double> leer_distancia(string filepath) {
+    vector<double> res(10, 0.0);
+
+    ifstream file;
+    file.open(filepath);
+
+    string data;
+    getline(file, data);
+    data = "";
+    for (int i = 0; i < 10; ++i) {
+        getline(file, data);
+        auto it = find(data.begin(), data.end(), ',');
+        it++;
+        string numero;
+        while (*it != '\000' && *it != EOF && *it != '\r') {
+            numero.append(1, *it);
+            it++;
+        }
+
+        res[i] = stod(numero);
+    }
+    file.close();
+    return res;
+}
+
+void KNN_distancia(Dato& A, const vector<Dato>& training, uint k) {
+
+    vector<double> distancias_maximas = leer_distancia("../data/distancias_maximas.csv");
+    double distancia_max = max_element(distancias_maximas.begin(), distancias_maximas.end()).operator*();
 
     priority_queue<pair<Etiqueta,double>, vector<pair<Etiqueta,double> >, menor> distancias;
 
