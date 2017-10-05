@@ -14,7 +14,6 @@ void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& t
         }
         else{
             test.push_back(datos[j]);
-            etiquetas_Reales[datos[j].etiqueta]++;
         }
     }
 }
@@ -84,7 +83,7 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
 //por ahora vamos a usar recall y f_score de M y no mu son dos formas distintas que no se muy bien como se diferencian
 //hacemos esto como primer idea ya que acuraccy tiene una cuenta muy parecida a las M
 
-void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint),const string& nombre_archivo, const string& nombre_metodo){
+void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint),const string& nombre_archivo, const string& nombre_metodo, bool correr_PCA){
     //Lectura de datos
     ifstream k_fold_file;
     k_fold_file.open("../tests/"+nombre_archivo+ ".in");
@@ -99,27 +98,20 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
     vector<Dato> datos;
     cerr<< data<<" "<<k_fold<<" "<<alpha<<" "<<k_nn<<"\n";
     cargar_training(datos, data);
+
     //cambio la dimension de los datos.
-    if(alpha < 28*28){
+    if(alpha < 28*28 && correr_PCA){
         PCA(datos, alpha);
     }
-
-    //guardo cuantas etiquetas hay de cada una en el set de test por cada kfold
-    ofstream etiquetas_kfold;
-    //header
-    etiquetas_kfold.open(nombre_metodo+"_"+nombre_archivo+"_etiquetas.csv", ios_base::app);
-    for(int i = 0;i < 10; ++i) {
-        etiquetas_kfold<<"etiqueta_"<<to_string(i);
-        if(i != 9) etiquetas_kfold<<",";
-    }
-    etiquetas_kfold <<"\n";
 
 
     //guardo las matrices de confusion
     ofstream output;
     //header
-    output.open(nombre_metodo+"_"+nombre_archivo+".csv", ios_base::app);
-    output<<"tamaño_test,";
+    string archivo = nombre_metodo;
+    if(correr_PCA) archivo +="PCA";
+    archivo += "_"+nombre_archivo+".csv"
+    output.open(archivo, ios_base::app);
     for(int i = 0;i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             output<<"("<<to_string(i)<<"."<<to_string(j)<<")";
@@ -129,8 +121,6 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
     }
     output <<"\n";
 
-    //me va a decir cuantas etiquetas de cada categoria hay en el set de test.
-    vector<int> etiquetas_Reales(10, 0);
 
     //corro kfold
     for(int i = 0; i<k_fold; ++i){
@@ -142,7 +132,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
 
 
         //separo los datos en test y training, creo que tendria que saber las cantidades, no estoy seguro
-        separador(datos, training, test, k_fold_file, etiquetas_Reales);
+        separador(datos, training, test, k_fold_file);
 
 
         //corro la resolucion para todo lo que separamos como test.
@@ -161,12 +151,6 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
         }
         output<<"\n";
 
-        for(int j = 0;j < etiquetas_Reales.size(); ++j) {
-            etiquetas_kfold << etiquetas_Reales[j];
-            if(j != 9) etiquetas_kfold<<",";
-        }
-        etiquetas_kfold <<"\n";
-
     }
-
+    
 }
