@@ -18,7 +18,7 @@ void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& t
 }
 
 
-void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, int k_kfold) {
+void generar_Test(int desde_k_nn, int hasta_k_nn, int skip_k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, int k_kfold) {
     //CHEQUEAR QUE K_KFOLD SEA MENOR QUE EL TAMAÑO DE CADA BUCKET
     // for (int i = 0; i < 10; ++i) {
     //        throw std::out_of_range("mat_ con 0 filas o 0 columnas");
@@ -36,13 +36,17 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
     ofstream file;
 
 
-    int alpha = desde_alpha;
-    while (alpha <= hasta_alpha) {
-        file_name = "k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
-        file.open("../tests/" + file_name, ios_base::trunc);
-        file << "../sets/ " << k_nn << " " << alpha << " " << k_kfold << endl;
-        file.close();
-        alpha += skip_alpha;
+    int k_nn = desde_k_nn;
+    while(k_nn < hasta_k_nn) {
+        int alpha = desde_alpha;
+        while (alpha <= hasta_alpha) {
+            file_name = "k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
+            file.open("../tests/" + file_name, ios_base::trunc);
+            file << "../sets/ " << k_nn << " " << alpha << " " << k_kfold << endl;
+            file.close();
+            alpha += skip_alpha;
+        }
+        k_nn += skip_k_nn;
     }
 
     for (int i = 0; i < data.size(); ++i) {
@@ -69,18 +73,23 @@ void generar_Test(int k_nn, int desde_alpha, int hasta_alpha, int skip_alpha, in
             }
         }
 
-        int alpha = desde_alpha;
-        while (alpha <= hasta_alpha) {
-            file_name = "k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
-            file.open("../tests/" + file_name, ios_base::app);
+        k_nn = desde_k_nn;
+        while(k_nn < hasta_k_nn) {
+            int alpha = desde_alpha;
+            while (alpha <= hasta_alpha) {
+                file_name =
+                        "k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
+                file.open("../tests/" + file_name, ios_base::app);
 
-            for (int k = 0; k < data.size(); ++k) {
-                file << testing_map[k] << " ";
+                for (int k = 0; k < data.size(); ++k) {
+                    file << testing_map[k] << " ";
+                }
+
+                file << endl;
+                file.close();
+                alpha += skip_alpha;
             }
-
-            file << endl;
-            file.close();
-            alpha += skip_alpha;
+            k_nn += skip_k_nn;
         }
         testing_map.reset();
     }
