@@ -18,7 +18,7 @@ void cargar_training(vector<Dato> &resultado, const string &training_set_filePat
     ifstream data;
     data.open(training_set_filePath);
 
-    auto cantidad_lineas = std::count(std::istreambuf_iterator<char>(data),
+    long cantidad_lineas = std::count(std::istreambuf_iterator<char>(data),
                                       std::istreambuf_iterator<char>(),
                                       '\n');
 

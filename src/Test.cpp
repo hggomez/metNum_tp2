@@ -102,13 +102,10 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
     //Lectura de datos
     ifstream k_fold_file;
     k_fold_file.open("../tests/" + nombre_archivo + ".in");
-
     string data;
     int k_fold, k_nn, alpha;
-
-    k_fold_file >> data;
+    getline(k_fold_file, data, ' ');
     k_fold_file >> k_nn >> alpha >> k_fold;
-
     data += "train.csv";
     vector<Dato> datos;
     cerr << data << " " << k_fold << " " << alpha << " " << k_nn << "\n";
