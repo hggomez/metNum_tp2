@@ -24,10 +24,10 @@ void generar_Test(int desde_k_nn, int hasta_k_nn, int skip_k_nn, int desde_alpha
     //        throw std::out_of_range("mat_ con 0 filas o 0 columnas");
     //    }
 
-    string data_file_name = "../sets/train.csv";
+    const string data_file_name = "../sets/train.csv";
     vector<Dato> data;
     cargar_training(data, data_file_name);
-
+        
     vector<deque<int> > buckets(10);
     bitset<42000> testing_map;
     vector<int> subset_sizes(10);
@@ -37,7 +37,7 @@ void generar_Test(int desde_k_nn, int hasta_k_nn, int skip_k_nn, int desde_alpha
 
 
     int k_nn = desde_k_nn;
-    while(k_nn < hasta_k_nn) {
+    while(k_nn <= hasta_k_nn) {
         int alpha = desde_alpha;
         while (alpha <= hasta_alpha) {
             file_name = "k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
@@ -74,7 +74,7 @@ void generar_Test(int desde_k_nn, int hasta_k_nn, int skip_k_nn, int desde_alpha
         }
 
         k_nn = desde_k_nn;
-        while(k_nn < hasta_k_nn) {
+        while(k_nn <= hasta_k_nn) {
             int alpha = desde_alpha;
             while (alpha <= hasta_alpha) {
                 file_name =
