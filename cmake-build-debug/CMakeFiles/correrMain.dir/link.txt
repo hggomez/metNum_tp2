@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=gnu++11  -ggdb3 -O3 -march=native -g   CMakeFiles/correrMain.dir/src/KNN.cpp.o CMakeFiles/correrMain.dir/src/Lectura.cpp.o CMakeFiles/correrMain.dir/src/PCA.cpp.o CMakeFiles/correrMain.dir/src/Test.cpp.o CMakeFiles/correrMain.dir/src/main.cpp.o  -o correrMain 

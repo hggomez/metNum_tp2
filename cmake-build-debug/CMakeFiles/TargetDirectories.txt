@@ -1,0 +1,3 @@
+/home/javito/metNum_tp2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/javito/metNum_tp2/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/javito/metNum_tp2/cmake-build-debug/CMakeFiles/correrMain.dir
