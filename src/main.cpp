@@ -41,7 +41,6 @@ int main(int argc, char const *argv[]) {
         for (int alpha = 10; alpha <= 710; alpha+=50) {
             for (int kfold = 2; kfold <= 10; kfold+=4) {
                 file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
-                file_name = "k_" + to_string(knn) + "-alpha_710-kfold_10";
                 //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
                 correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
             }
