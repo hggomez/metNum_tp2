@@ -37,10 +37,15 @@ int main(int argc, char const *argv[]) {
     void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
     metodo_resolucion = KNN;
     string file_name;
-    for (int i = 2; i <=14 ; i+=4) {
-        file_name = "k_" + to_string(i) + "-alpha_710-kfold_10";
-        //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
-        correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
+    for (int knn = 2; knn <= 14; knn+=4) {
+        for (int alpha = 10; alpha <= 710; alpha+=50) {
+            for (int kfold = 2; kfold <= 10; kfold+=4) {
+                file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
+                file_name = "k_" + to_string(knn) + "-alpha_710-kfold_10";
+                //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
+                correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
+            }
+        }
     }
 
     /*
