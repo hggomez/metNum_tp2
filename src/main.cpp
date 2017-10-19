@@ -9,7 +9,7 @@
 
 template <typename F, typename... Args>
 void run_method(ofstream& output, const int repeticiones, F func, vector<Dato>& test_set, const vector<Dato>& training_set, Args&&... args) {
-    output << "ImageId,Label,Tiempo,Metodo" << endl;
+    output << "ImageId,Label" << endl;
 
     for (int id = 1; id <= test_set.size(); ++id) {
         cerr << "id: " << id << endl;
@@ -17,7 +17,7 @@ void run_method(ofstream& output, const int repeticiones, F func, vector<Dato>& 
         auto tiempo = measure<chrono::microseconds>::execution(repeticiones, func, test_set[id-1], training_set, args... );
 
         cerr <<  "Resultado: ";
-        output << id << ',' << test_set[id-1].etiqueta << ',' << tiempo << ",KNN" << endl;
+        output << id << ',' << test_set[id-1].etiqueta << endl;
         cerr << endl;
     }
 }
@@ -35,17 +35,18 @@ string getCmdOption(const char* argv[], int argc, const std::string & option)  {
 int main(int argc, char const *argv[]) {
 
     void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
-    metodo_resolucion = KNN;
+    metodo_resolucion = KNN_distancia;
     string file_name;
-    for (int knn = 2; knn <= 14; knn+=4) {
-        for (int alpha = 10; alpha <= 710; alpha+=50) {
-            for (int kfold = 2; kfold <= 10; kfold+=4) {
+//    for (int knn = 2; knn <= 14; knn+=4) {
+        for (int kfold = 2; kfold <= 10; kfold+=4) {
+            for (int alpha = 10; alpha <= 310; alpha+=50) {
+                int knn = 2;
                 file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
                 //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
-                correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
+                correr_Cross_Val(metodo_resolucion, file_name, "KNNMOD", true);
             }
         }
-    }
+//    }
 
     /*
 
@@ -68,7 +69,7 @@ int main(int argc, char const *argv[]) {
     int k = 99;
     int repeticiones = 1;
 
-//    distancias_maximas(training_set);
+
 
     switch(method) {
         case 0:

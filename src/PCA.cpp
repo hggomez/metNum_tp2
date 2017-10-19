@@ -147,7 +147,6 @@ void PCA(vector<Dato>& training, int alpha) {
                 colj(fila, 0) = nuevaBase(fila,columna);
             }
             training[columna].imagen = colj;
-            cerr<<"asigne la nueva imagen";
         }
 
 }
