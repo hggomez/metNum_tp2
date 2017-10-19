@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <queue>
 #include <complex>
+#include <iostream>
 
 #include "Metodos_de_Resolucion.h"
 
@@ -114,7 +115,7 @@ vector<double> leer_distancia(string filepath) {
 void KNN_distancia(Dato& A, const vector<Dato>& training, uint k) {
 
     vector<double> distancias_maximas = leer_distancia("../data/distancias_maximas.csv");
-    double distancia_max = max_element(distancias_maximas.begin(), distancias_maximas.end()).operator*();
+    double distancia_max = max_element(distancias_maximas.begin(), distancias_maximas.end()).operator*() / 2;
 
     priority_queue<pair<Etiqueta,double>, vector<pair<Etiqueta,double> >, menor> distancias;
 
@@ -124,13 +125,22 @@ void KNN_distancia(Dato& A, const vector<Dato>& training, uint k) {
     }
 
     vector<int> etiquetas(10, 0);
-    for (uint i = 0; i < k; ++i) {
+
+
+    while (!distancias.empty() && distancias.top().second <= distancia_max) {
         Etiqueta e = distancias.top().first;
-        if (distancias.top().second <= distancia_max) {
-            etiquetas[e]++;
-            distancias.pop();
-        }
+        etiquetas[e]++;
+        distancias.pop();
     }
+
+
+//    for (uint i = 0; i < k; ++i) {
+//        Etiqueta e = distancias.top().first;
+//        etiquetas[e]++;
+//
+//        if (distancias.top().second <= distancia_max)
+//            distancias.pop();
+//    }
 
     auto max = max_element(etiquetas.begin(), etiquetas.end());
 
