@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <fstream>
+#include <thread>
 
 #include "Measure.h"
 #include "Lectura.h"
@@ -32,21 +33,31 @@ string getCmdOption(const char* argv[], int argc, const std::string & option)  {
     return nullptr;
 }
 
+void knntask(int knn) {
+    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
+    metodo_resolucion = KNN;
+    string file_name;
+    int kfold = 10;
+    for (int kfold = 2; kfold <= 10; kfold+=8) {
+        for (int alpha = 10; alpha <= 310; alpha += 50) {
+            file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
+            //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
+            correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
+        }
+    }
+}
+
+
 int main(int argc, char const *argv[]) {
 
-    void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
-    metodo_resolucion = KNN_distancia;
-    string file_name;
-//    for (int knn = 2; knn <= 14; knn+=4) {
-    int knn = 2;
-    for (int kfold = 10; kfold >= 2; kfold-=4) {
-            for (int alpha = 310; alpha >= 10; alpha-=50) {
-                file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
-                //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
-                correr_Cross_Val(metodo_resolucion, file_name, "KNNMOD", true);
-            }
-        }
-//    }
+    std::thread six (knntask, 6);
+    std::thread ten (knntask, 10);
+    std::thread fourteen (knntask, 14);
+
+    six.join();
+    ten.join();
+    fourteen.join();
+
 
     /*
 
