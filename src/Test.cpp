@@ -1,6 +1,9 @@
 //
 // Created by javier on 28/09/17.
 //
+#include <bitset>
+#include <deque>
+#include <algorithm>
 #include "Test.h"
 
 using namespace std;
@@ -27,7 +30,7 @@ void generar_Test(int desde_k_nn, int hasta_k_nn, int skip_k_nn, int desde_alpha
     const string data_file_name = "../sets/train.csv";
     vector<Dato> data;
     cargar_training(data, data_file_name);
-        
+
     vector<deque<int> > buckets(10);
     bitset<42000> testing_map;
     vector<int> subset_sizes(10);
@@ -116,6 +119,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
         PCA(datos, alpha);
     }
 
+    distancias_maximas(datos);
 
     //guardo las matrices de confusion
     ofstream output;
