@@ -7,7 +7,8 @@
 #include <fstream>
 
 #include "Metodos_de_Resolucion.h"
-
+//#include "Mat.h"
+//#include "Dato.h"
 using namespace std;
 
 template <typename T>
@@ -61,7 +62,7 @@ Mat<T> construiryCentrarX(vector< Mat<T> > &S){ //Tengo la secuencia de datos x(
     return X;
 }
 
-void calcular_MatrizVt(const vector<Dato>& training, int iter){
+void calcular_MatrizVt(const vector<Dato>& training, int iter, int cant_kfold, int fold_actual){
     vector< Mat<double> > imag;
 
     for(int i = 0; i < training.size() ; i++){
@@ -77,22 +78,22 @@ void calcular_MatrizVt(const vector<Dato>& training, int iter){
 
     vector<double> autovalores;
     cerr<<"calcule la Matriz de covarianza\n";
-    Mat<double>::baseAutovectores(Mcov,autovalores,iter); //Escribe la matriz Vt en el archivo base_autovec.txt
+    Mat<double>::baseAutovectores(Mcov,autovalores,iter, cant_kfold, fold_actual); //Escribe la matriz Vt en el archivo base_autovec.txt
     cerr<<"termine de calcular la baseAutovectores\n";
 }
 
 
-void PCA(vector<Dato>& training, int alpha) {
+void PCA(vector<Dato>& training, int alpha, int cant_kfold, int fold_actual) {
 
     string line;
-    ifstream autovec_archivo ("../src/base_autovec.txt");
+    ifstream autovec_archivo ("../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt");
 
     int filaVt;
     int columVt;
     if(!autovec_archivo.is_open()){
         cerr<<"calculo la matriz por primera vez\n";
-        calcular_MatrizVt(training, 100);
-        autovec_archivo.open("../src/base_autovec.txt", ios_base::in);
+        calcular_MatrizVt(training, 100, cant_kfold, fold_actual);
+        autovec_archivo.open("../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt", ios_base::in);
         cerr<<"termine de calcular la matriz\n";
     }
     autovec_archivo >> filaVt;

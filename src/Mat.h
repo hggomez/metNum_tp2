@@ -215,7 +215,7 @@ public:
     * @param autovalores
     * @param iteraciones para calcular autovalor.
     */
-    static void baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter);
+    static void baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter, int cant_fold, int fold_actual);
 
     /**
     * Crea una matriz con numeros al azar
@@ -873,7 +873,7 @@ bool Mat<T>::esNulo(Mat<T> &A){
 }
 
 template <typename T>
-void Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter){
+void Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter, int cant_fold, int fold_actual){
     vector<Mat<T> > base; // Guardamos la base como un Conjunto de vectores que se representa con vector de Mat
     Mat<T> v = Mat(A.filas(), 1); // Inicializamos el vector x0 que va a ser random
     for (int i = 0; i < A.filas(); i++) {
@@ -895,7 +895,7 @@ void Mat<T>::baseAutovectores(Mat<T> &A , vector<double> &autovalores, int iter)
 
     ofstream myfile;
 
-    myfile.open("../src/base_autovec.txt");
+    myfile.open("../src/base_autovec("+to_string(cant_fold)+")("+to_string(fold_actual)+".txt");
     int Mfila = base.size(); // Filas de la matriz grande es la cant de autovectores
     int Mcol = base[0].filas(); // Las columnas de la matriz es igual a la dimension de los autovectores
     myfile << Mfila << "," << Mcol << endl;

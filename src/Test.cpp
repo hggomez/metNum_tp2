@@ -116,7 +116,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
 
     //cambio la dimension de los datos.
     if(alpha < 28*28 && correr_PCA){
-        PCA(datos, alpha);
+        //PCA(datos, alpha);
     }
 
     distancias_maximas(datos);
@@ -143,6 +143,9 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
         //cada fila habla del valor real de la etiqueta y cada columna acumula cuantos etiquetas seleccionamos mal/bien
         //matriz de confusion
         Mat<int> matriz_confusion(10, 10, 0);
+        if(correr_PCA){
+            PCA(datos, alpha, k_fold, i);
+        }
         //subdivido el conjunto en training y test
         vector<Dato> training, test;
 
