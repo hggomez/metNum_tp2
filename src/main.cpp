@@ -114,7 +114,8 @@ void knntask(int knn) {
     for (int kfold = 2; kfold <= 10; kfold+=4) {
         for (int alpha = 30; alpha <= 190; alpha += 20) {
             file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
-            //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
+            cerr<<file_name<<"\n";
+            //"k_" + to_string(k_nn) + "-alpha_"    + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
             correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
         }
     }

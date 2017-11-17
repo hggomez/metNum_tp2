@@ -86,12 +86,13 @@ void calcular_MatrizVt(const vector<Dato>& training, int iter, int cant_kfold, i
 void PCA(vector<Dato>& training, int alpha, int cant_kfold, int fold_actual) {
 
     string line;
-    ifstream autovec_archivo ("../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt");
+    ifstream autovec_archivo ("../src/base_autovec("+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt");
 
     int filaVt;
     int columVt;
     if(!autovec_archivo.is_open()){
         cerr<<"calculo la matriz por primera vez\n";
+        cerr<<"../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt\n";
         calcular_MatrizVt(training, 100, cant_kfold, fold_actual);
         autovec_archivo.open("../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt", ios_base::in);
         cerr<<"termine de calcular la matriz\n";

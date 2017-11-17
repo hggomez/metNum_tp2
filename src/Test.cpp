@@ -111,7 +111,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
     k_fold_file >> k_nn >> alpha >> k_fold;
     data += "train.csv";
     vector<Dato> datos;
-    cerr << data << " " << k_fold << " " << alpha << " " << k_nn << "\n";
+    cerr << data << " " << k_nn << " " << alpha << " " << k_fold << "\n";
     cargar_training(datos, data);
 
     //cambio la dimension de los datos.
