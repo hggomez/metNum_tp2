@@ -152,10 +152,12 @@ int main(int argc, char const *argv[]) {
 
     }*/
 
+    std::thread two (knntask, 2);
     std::thread six (knntask, 6);
     std::thread ten (knntask, 10);
     std::thread fourteen (knntask, 14);
 
+    two.join();
     six.join();
     ten.join();
     fourteen.join();
