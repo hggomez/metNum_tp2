@@ -92,7 +92,7 @@ void PCA(vector<Dato>& training, int alpha, int cant_kfold, int fold_actual) {
     int columVt;
     if(!autovec_archivo.is_open()){
         cerr<<"calculo la matriz por primera vez\n";
-        cerr<<"../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt\n";
+        cerr<<"../src/base_autovec("+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt\n";
         calcular_MatrizVt(training, 100, cant_kfold, fold_actual);
         autovec_archivo.open("../src/base_autovec"+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt", ios_base::in);
         cerr<<"termine de calcular la matriz\n";
@@ -132,14 +132,18 @@ void PCA(vector<Dato>& training, int alpha, int cant_kfold, int fold_actual) {
     for(int i = 0; i < training.size() ; i++){
         imag.push_back(training[i].imagen);
     } //Obtenemos solo las imagenes del training
-
     Mat<double> X = construiryCentrarX(imag); // X(#imagen,dimImagen)
+    cerr<<"X tiene "<< X.filas()<<"x"<<X.columnas()<<"\n";
+
 
     Mat<double> Xt = X;
     Mat<double>::transpuesta(Xt); // Tomamos la transpuesta de X
     cerr<<"Traspuse X\n";
     // Notar que Vt(alpha,dimImagen) Xt(dimImagen,#imagenes) -> nuevaBase(alpha,#imagenes) , es decir, la columnas de nuevaBase
     // son las imagenes de la nueva base. #imagenes = training.size()
+    cerr<<"PCA nueva base dimensiones "<<Vt.filas()<<"x"<<Vt.columnas()<<" * "<< Xt.filas()<<"x"<<Xt.columnas()<<"\n";
+    cerr<<"../src/base_autovec("+to_string(cant_kfold)+")("+to_string(fold_actual)+".txt\n";
+
     Mat<double> nuevaBase = Vt*Xt;
     cerr<<"cambie la base\n";
 
