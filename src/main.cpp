@@ -110,9 +110,9 @@ void knntask(int knn) {
     void (* metodo_resolucion)(Dato&, const vector<Dato>&, uint);
     metodo_resolucion = KNN;
     string file_name;
-    int kfold = 10;
-    for (int kfold = 2; kfold <= 10; kfold+=8) {
-        for (int alpha = 10; alpha <= 310; alpha += 50) {
+
+    for (int kfold = 2; kfold <= 10; kfold+=4) {
+        for (int alpha = 30; alpha <= 190; alpha += 20) {
             file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
             //"k_" + to_string(k_nn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
             correr_Cross_Val(metodo_resolucion, file_name, "KNN", true);
