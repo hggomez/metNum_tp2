@@ -9,6 +9,7 @@
 using namespace std;
 
 void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& test, ifstream& k_fold_file) {
+    cerr<<"separador:"<<datos.size()<<" "<<training.size()<<"\n";
     for(int j = 0; j<datos.size(); ++j){
         bool train;
         k_fold_file >> train;
@@ -18,6 +19,7 @@ void separador(const vector<Dato>& datos,vector<Dato>& training, vector<Dato>& t
             test.push_back(datos[j]);
         }
     }
+    cerr<<"separadorfin:"<<training.size()<<"\n";
 }
 
 
@@ -119,7 +121,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
         //PCA(datos, alpha);
     }
 
-    distancias_maximas(datos);
+    //distancias_maximas(datos);
 
     //guardo las matrices de confusion
     ofstream output;
@@ -152,7 +154,7 @@ void correr_Cross_Val(void (* metodo_resolucion)(Dato&, const vector<Dato>&, uin
 
 
         //separo los datos en test y training, creo que tendria que saber las cantidades, no estoy seguro
-        separador(datos, training, test, k_fold_file);
+        separador(datos_aux, training, test, k_fold_file);
 
 
         //corro la resolucion para todo lo que separamos como test.

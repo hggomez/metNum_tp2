@@ -24,6 +24,17 @@ void run_method(ofstream& output, const int repeticiones, F func, vector<Dato>& 
     }
 }
 
+void correrKnn(ofstream& output, vector<Dato>& test_set, const vector<Dato>& training, int k){
+    output << "ImageId,Label" << endl;
+
+    for (int id = 1; id <= test_set.size(); ++id) {
+        if(id % 100 == 0) cerr << "id: " << id << endl;
+
+        KNN(test_set[id], training, k);
+        output << id << ',' << test_set[id-1].etiqueta << endl;
+    }
+}
+
 string getCmdOption(const char* argv[], int argc, const std::string & option)  {
     for (int i = 0; i < argc; ++i) {
 
@@ -112,7 +123,7 @@ void knntask(int knn) {
     string file_name;
 
     for (int kfold = 2; kfold <= 10; kfold+=4) {
-        for (int alpha = 30; alpha <= 190; alpha += 20) {
+        for (int alpha = 65; alpha <= 70; alpha += 5) {
             file_name = "k_" + to_string(knn) + "-alpha_" + to_string(alpha) + "-kfold_" + to_string(kfold);
             cerr<<file_name<<"\n";
             //"k_" + to_string(k_nn) + "-alpha_"    + to_string(alpha) + "-kfold_" + to_string(k_kfold) + ".in";
@@ -122,11 +133,8 @@ void knntask(int knn) {
 }
 
 
-int main(int argc, char const *argv[]) {
-/*
-    //hago las bases de verdad.
+void crear_bases(){
     for(int i = 2; i<=10; i += 4) {
-
 
         string nombre_archivo = "k_2-alpha_10-kfold_"+to_string(i);
 
@@ -150,12 +158,43 @@ int main(int argc, char const *argv[]) {
             calcular_MatrizVt1(training, 100, i, j);
         }
 
-    }*/
+    }
+}
 
-    std::thread two (knntask, 2);
-    std::thread six (knntask, 6);
-    std::thread ten (knntask, 10);
-    std::thread fourteen (knntask, 14);
+void prueba_folds(){
+    vector<Dato> test_set;
+    cargar_test(test_set,"../sets/test.csv");
+    vector<Dato> datos;
+    cargar_training(datos,"../sets/train.csv");
+    cerr<<datos.size()<<" "<<test_set.size()<<"\n";
+    //k 2 = 0.95442
+    //k 6 = 0.92971
+    // k 10 = 0.91400
+    for(int i = 2; i <=10; i+= 4) {
+        vector<Dato> training, aux;
+        ifstream k_fold_file;
+        cerr<<"empiezo el fold "<<i<<"\n";
+        string archivo = "../tests/k_2-alpha_30-kfold_" +to_string(i) + ".in";
+        cerr<<archivo<<"\n";
+        k_fold_file.open(archivo);
+        if(k_fold_file.is_open()) cerr<<"abrio\n";
+        k_fold_file.ignore(numeric_limits<streamsize>::max(),'\n');
+        separador(datos, training, aux, k_fold_file);
+        ofstream salida("solknn" +to_string(i)+".csv");
+        correrKnn(salida, test_set, training, 2);
+        cerr<<"termino el fold "<<i<<"\n";
+
+    }
+}
+
+int main(int argc, char const *argv[]) {
+
+    //prueba_folds();
+
+    std::thread two (knntask, 3);
+    std::thread six (knntask, 5);
+    std::thread ten (knntask, 7);
+    std::thread fourteen (knntask, 9);
 
     two.join();
     six.join();
